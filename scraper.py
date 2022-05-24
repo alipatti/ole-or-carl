@@ -115,8 +115,9 @@ def _get_carleton_cookies() -> dict:
             cookies = pickle.load(f)
     except (FileNotFoundError, EOFError):
 
-        with open(CREDENTIALS_PATH, "rt") as f:
-            username, password = f.readlines()
+        print("Enter Carleton login information.")
+        username = input("username: ")
+        password = input("password: ")
 
         options = webdriver.ChromeOptions()
         options.headless = True
