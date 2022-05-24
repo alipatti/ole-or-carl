@@ -1,0 +1,7 @@
+__pycache__
+credentials.txt
+*.pkl
+*.ipynb
+.DS_Store
+directory/
+images/
