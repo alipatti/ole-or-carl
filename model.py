@@ -3,6 +3,7 @@ from scraper import get_directory, IMG_FOLDER
 import os
 import pickle
 import numpy as np
+from functools import cache
 from tqdm import tqdm
 
 from face_recognition.api import face_encodings, load_image_file
@@ -38,8 +39,8 @@ def _vectorize_faces():
         pickle.dump(vectors, f)
 
 
-def _build_and_train_model(test_size=0.15):
-    with open("face_vectors.pkl", "rb") as f:
+def _build_and_train_model(test_size=0.15, write_to_disk=True):
+    with open(VECTOR_FILE, "rb") as f:
         vectors = pickle.load(f)
 
     labeled_vectors = [
@@ -57,10 +58,11 @@ def _build_and_train_model(test_size=0.15):
 
     print(f"Test cases correct: {pipe.score(X_test, Y_test):.1%}")
 
+    if not write_to_disk:
+        return pipe
+
     with open(MODEL_FILE, "wb") as f:
         pickle.dump(pipe, f)
-
-    # done
 
 
 #########################
@@ -68,12 +70,14 @@ def _build_and_train_model(test_size=0.15):
 #########################
 
 
-def load_vectors():
+@cache
+def get_vectors():
     with open(VECTOR_FILE, "rb") as f:
-        return pickle.load(f)
+        VECTORS = pickle.load(f)
 
 
-def load_model():
+@cache
+def get_model():
     with open(MODEL_FILE, "rb") as f:
         return pickle.load(f)
 
@@ -85,10 +89,10 @@ def show_image(email):
 def predict(email, vectors=None, model=None):
 
     if not vectors:
-        load_vectors()
+        get_vectors()
 
     if not model:
-        load_model()
+        get_model()
 
     show_image(email)
 
@@ -97,9 +101,9 @@ def predict(email, vectors=None, model=None):
     print(f"{'Carl' if prediction > 0 else 'Ole'} ({prediction[0]:.3f})")
 
 
-########
-# MAIN #
-########
+###############
+# DRIVER CODE #
+###############
 
 
 def create_model():

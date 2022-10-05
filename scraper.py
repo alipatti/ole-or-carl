@@ -3,10 +3,10 @@ import json
 import os
 import pickle
 import string
-from typing import NewType
+import typing
+import re
 
 import requests
-import regex as re
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
@@ -21,7 +21,7 @@ from selenium.webdriver.support.expected_conditions import element_to_be_clickab
 # CUSTOM TYPEDEFS #
 ###################
 
-Email = NewType("Email", str)
+Email = typing.NewType("Email", str)
 
 
 #############
@@ -39,8 +39,8 @@ IMG_URLS = {
 IMG_FOLDER = "data/images/"
 DIRECTORY_FOLDER = "data/directory/"
 
-CREDENTIALS_PATH = "credentials.txt"
-COOKIE_PATH = "carleton_cookies.pkl"
+CREDENTIALS_PATH = "data/credentials.txt"
+COOKIE_PATH = "data/carleton_cookies.pkl"
 OLE_PATH = os.path.join(DIRECTORY_FOLDER + "oles.json")
 CARL_PATH = os.path.join(DIRECTORY_FOLDER + "carls.json")
 

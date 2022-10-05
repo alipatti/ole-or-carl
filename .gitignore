@@ -1,4 +1,11 @@
 __pycache__
 .DS_Store
-*.ipynb
+.VSCodeCounter
+
 data/*
+scratch.ipynb
+
+# personal stuff
+kallout
+freshmen
+most_ole_frosh.ipynb
