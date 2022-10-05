@@ -1,11 +1,5 @@
-__pycache__
-.DS_Store
-.VSCodeCounter
+# don't leak confidential information!
+database/directory.sqlite
 
-data/*
-scratch.ipynb
-
-# personal stuff
-kallout
-freshmen
-most_ole_frosh.ipynb
+# don't clog rep during migration
+_legacy
