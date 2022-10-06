@@ -1,7 +1,7 @@
 from io import BytesIO
 import json
 from typing import Literal
-from peewee import SqliteDatabase, CharField, BlobField, Model
+from peewee import SqliteDatabase, CharField, BlobField, Model, IntegerField
 import numpy as np
 
 from ..settings import DATABASE_PATH
@@ -9,7 +9,7 @@ from ..settings import DATABASE_PATH
 db = SqliteDatabase(DATABASE_PATH)
 
 
-class ImageField(BlobField):
+class NDArrayField(BlobField):
     def python_value(self, blob: bytes) -> np.ndarray:
         return np.load(BytesIO(blob))
 
@@ -37,14 +37,20 @@ class SchoolField(CharField):
 
 class Student(Model):
     name = CharField()
-    email = CharField(primary_key=True)
+    email = CharField(unique=True)
+    year = IntegerField()
+    pronouns = CharField(null=True)
     school = SchoolField()
-    image = ImageField()
+
     majors = JsonField()
     minors = JsonField()
 
+    image = NDArrayField(null=True)
+    face_vector = NDArrayField(null=True)
+
     class Meta:
         database = db
+
 
 # this will only create the tables if they don't exist
 db.connect()

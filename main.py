@@ -1,11 +1,24 @@
-from unicodedata import name
-from oleorcarl.database.models import db, Student
+from typing import Literal
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 
-print(db.get_tables())
+from src.scraper.carleton import CarletonDirectorySpider, get_carleton_cookies
+from src.scraper.stolaf import OlafDirectorySpider
 
-Student(    
-    name="Alistair Pattison",
-    email="pattisona@carleton.edu",
-    school="carleton",
-    image="Alistair Pattison",
-)
+
+def scrape(site: Literal["carleton", "stolaf", "all"]):
+
+    process = CrawlerProcess(get_project_settings())
+
+    if site in {"carleton", "all"}:
+        get_carleton_cookies()
+        process.crawl(CarletonDirectorySpider)
+
+    if site in {"stolaf", "all"}:
+        process.crawl(OlafDirectorySpider)
+
+    process.start()
+
+
+if __name__ == "__main__":
+    scrape("carleton")

@@ -1,7 +1,7 @@
 import scrapy
 
 
-class StolafSpider(scrapy.Spider):
+class OlafDirectorySpider(scrapy.Spider):
     name = 'stolaf'
     allowed_domains = ['stolaf.edu']
     start_urls = ['http://stolaf.edu/']
