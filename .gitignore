@@ -10,3 +10,6 @@ _legacy
 
 # macos jeffery
 .DS_Store
+
+# log outputs
+*.log
