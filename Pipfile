@@ -11,13 +11,15 @@ tqdm = "*"
 scikit-learn = "*"
 numpy = "*"
 pillow = "*"
-ipykernel = "*"
 selenium = "*"
+face-recognition = "*"
+
 
 [dev-packages]
 pylint = "*"
-face-recognition = "*"
 black = "*"
+ipykernel = "*"
+
 
 [requires]
 python_version = "3.10"
