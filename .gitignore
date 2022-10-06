@@ -1,5 +1,12 @@
 # don't leak confidential information!
-database/directory.sqlite
+*.sqlite
+*.secret
 
 # don't clog rep during migration
 _legacy
+
+# python bytecode
+**/__pycache__
+
+# macos jeffery
+.DS_Store
