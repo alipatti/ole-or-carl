@@ -1,7 +1,0 @@
-requests
-regex
-beautifulsoup
-tqdm
-selenium
-scikit-learn
-ipython
