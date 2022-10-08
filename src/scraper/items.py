@@ -1,6 +1,8 @@
+import typing
 from peewee import DatabaseError
 
-from ..database.models import Student
+if typing.TYPE_CHECKING:
+    from ..database import Student
 
 
 class ModelItem(dict):
@@ -14,9 +16,9 @@ class ModelItem(dict):
     >>> "number" in player.__data___  # True
     """
 
-    _model: Student
+    _model: "Student"
 
-    def __init__(self, model, *args, **kwargs):
+    def __init__(self, model):
         # input data
         self.update(model.__data__)
 
@@ -30,6 +32,6 @@ class ModelItem(dict):
 
     def save(self):
         if self._model.save():
-            return 1
+            return
 
         raise DatabaseError(f"Unable to save {self._model}")

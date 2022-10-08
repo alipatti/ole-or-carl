@@ -10,7 +10,7 @@ from scrapy.http import HtmlResponse, FormRequest
 from scrapy.selector import SelectorList
 
 from .items import ModelItem
-from ..database.models import Student
+from ..database import Student
 from ..settings import COOKIE_PATH, CARLETON_DIRECTORY_URL
 
 
@@ -39,7 +39,7 @@ class CarletonDirectorySpider(scrapy.Spider):
 
         # deploy requests
         for a in ascii_lowercase:
-            self.log("Crawling '{a}' emails...", logging.INFO)
+            self.log("Scraping '{a}' emails...", logging.INFO)
 
             for b in ascii_lowercase:
                 yield FormRequest(
@@ -50,7 +50,7 @@ class CarletonDirectorySpider(scrapy.Spider):
                     callback=self.parse,
                 )
 
-            self.log("Finished crawling '{a}' emails.", logging.INFO)
+            self.log("Finished scraping '{a}' emails.", logging.INFO)
 
     def parse(self, response: HtmlResponse):  # pylint: disable=arguments-differ
         if self.overflow_warning in str(response):
@@ -61,25 +61,21 @@ class CarletonDirectorySpider(scrapy.Spider):
             )
 
         if self.login_warning in str(response):
-            self.log(
-                "Unable to properly log in to the Carleton Directory.",
-                logging.ERROR,
-            )
+            self.log("Unable to log in to the Carleton Directory.", logging.ERROR)
+            self.close(self, "Unable to log in to the Carleton Directory.")
 
         pre = ".campus-directory__"  # wordpress CSS class prefix
 
         for li in response.css(f"{pre}people {pre}person"):
-            # load data that we know so far and send it down the pipeline
-            # to be filtered and have its remaining attributes added
+            li: SelectorList  # for intellisense
 
-            li: SelectorList
             yield ModelItem(
                 Student(
                     name=li.css(f"{pre}person-name::text").get(),
                     email=li.css(f"{pre}email a::text").get(),
                     year=li.css(f"{pre}cohort-year::text").get(),
                     majors=li.css(f"{pre}person-majors a::text").getall(),
-                    minors=li.css(f"{pre}person-minors::text").getall(),
+                    minors=li.css(f"{pre}person-minors a::text").getall(),
                     pronouns=li.css(f"{pre}pronouns::text").get(),
                     school="carleton",
                 )

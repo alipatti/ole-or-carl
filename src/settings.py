@@ -28,19 +28,22 @@ BOT_NAME = "Carleton/Olaf Directory Scraper"
 SPIDER_MODULES = ["src.scraper"]
 NEWSPIDER_MODULE = "src.scraper"
 
+LOG_LEVEL = "INFO"
 # LOG_FILE="./scrapy.log"
 
 # USER_AGENT = "scraper (+http://www.yourdomain.com)"
 ROBOTSTXT_OBEY = True
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
-DOWNLOAD_DELAY = .25
+DOWNLOAD_DELAY = 1
+
+LOG_LEVEL = "INFO"
+LOG_FORMAT = "%(levelname)s: %(message)s"
 
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-from .scraper.pipelines import UniqueFilter, ImageDownloader, FaceEmbedder, DBSaver, GrownupFilter
 ITEM_PIPELINES = {
-    GrownupFilter: 100,
-    UniqueFilter: 101,
-    ImageDownloader: 200,
-    FaceEmbedder: 300,
-    # DBSaver: 1000,
+    "src.scraper.pipelines.ItemPrinter": 1,
+    "src.scraper.pipelines.GrownupFilter": 100,
+    "src.scraper.pipelines.UniqueFilter": 101,
+    "src.scraper.pipelines.FaceEmbedder": 300,
+    "src.scraper.pipelines.DBSaver": 1000,
 }
