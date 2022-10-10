@@ -1,11 +1,12 @@
 from io import BytesIO
 import json
-from typing import Literal
 
 from peewee import SqliteDatabase, Model, CharField, BlobField, IntegerField
 import numpy as np
+from PIL import Image
+import requests
 
-from .settings import DATABASE_PATH
+from .settings import CARLETON_IMAGE_URL, DATABASE_PATH, OLAF_IMG_URL
 
 
 db = SqliteDatabase(DATABASE_PATH)
@@ -22,45 +23,52 @@ class NDArrayField(BlobField):
         if value is None:
             return None
 
-        stream = BytesIO
+        stream = BytesIO()
         np.save(stream, value)
         return stream.getvalue()
 
 
 class ListField(CharField):
     def python_value(self, value: str) -> list:
-        json.loads(value)
+        return json.loads(value)
 
     def db_value(self, value: list) -> str:
-        json.dumps(value)
-
-
-class SchoolField(CharField):
-    SCHOOLS = {"stolaf", "carleton"}
-
-    def db_value(self, value: str) -> Literal["stolaf", "carleton"]:
-        assert value in self.SCHOOLS, f"`school` must be one of {self.SCHOOLS}"
-        return value
+        return json.dumps(value)
 
 
 class Student(Model):
     name = CharField(index=True)
     email = CharField(unique=True)
     year = IntegerField()
-    school = SchoolField()
-
+    school = CharField()
     pronouns = CharField(null=True)
+    departments = ListField()
 
-    majors = ListField()
-    minors = ListField()
+    face = NDArrayField(null=True)
 
-    # image = NDArrayField(null=True)
-    # face_vector = NDArrayField(null=True)
+    def get_image(self) -> Image.Image:
+        url = OLAF_IMG_URL if self.email.endswith("stolaf.edu") else CARLETON_IMAGE_URL
+
+        with requests.get(url.format(self.email)) as r:
+            return Image.open(r.content)
 
     class Meta:
         database = db
 
 
-def create_tables(safe=False):
+def create_tables(safe=True):
     db.connect()
     db.create_tables([Student], safe=safe)
+
+
+if __name__ == "__main__":
+    a1 = np.arange(5)
+    field = NDArrayField()
+    as_bytes = field.db_value(a1)
+
+    print(as_bytes)
+    print(type(as_bytes))
+
+    a2 = field.python_value(as_bytes)
+    print(a2)
+    print(np.array_equal(a1, a2))

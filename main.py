@@ -1,5 +1,4 @@
 import os
-import time
 from typing import Literal
 import os
 
@@ -19,7 +18,7 @@ def scrape(site: Literal["carleton", "stolaf", "all"], reset_database=False):
     if reset_database:
         if os.path.exists(DATABASE_PATH):
             os.remove(DATABASE_PATH)
-            
+
         create_tables()
 
     if site in {"carleton", "all"}:
@@ -33,4 +32,4 @@ def scrape(site: Literal["carleton", "stolaf", "all"], reset_database=False):
 
 
 if __name__ == "__main__":
-    scrape("carleton", reset_database=True)
+    scrape("all", reset_database=False)

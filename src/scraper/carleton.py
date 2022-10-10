@@ -39,7 +39,7 @@ class CarletonDirectorySpider(scrapy.Spider):
 
         # deploy requests
         for a in ascii_lowercase:
-            self.log("Scraping '{a}' emails...", logging.INFO)
+            self.log(f"Scraping Carleton '{a}' emails...", logging.INFO)
 
             for b in ascii_lowercase:
                 yield FormRequest(
@@ -50,7 +50,7 @@ class CarletonDirectorySpider(scrapy.Spider):
                     callback=self.parse,
                 )
 
-            self.log("Finished scraping '{a}' emails.", logging.INFO)
+            self.log(f"Finished scraping '{a}' emails.", logging.INFO)
 
     def parse(self, response: HtmlResponse):  # pylint: disable=arguments-differ
         if self.overflow_warning in str(response):
@@ -69,17 +69,25 @@ class CarletonDirectorySpider(scrapy.Spider):
         for li in response.css(f"{pre}people {pre}person"):
             li: SelectorList  # for intellisense
 
-            yield ModelItem(
-                Student(
-                    name=li.css(f"{pre}person-name::text").get(),
-                    email=li.css(f"{pre}email a::text").get(),
-                    year=li.css(f"{pre}cohort-year::text").get(),
-                    majors=li.css(f"{pre}person-majors a::text").getall(),
-                    minors=li.css(f"{pre}person-minors a::text").getall(),
-                    pronouns=li.css(f"{pre}pronouns::text").get(),
-                    school="carleton",
-                )
+            item = ModelItem(Student())
+
+            item["name"] = li.css(f"{pre}person-name::text").get()
+            item["email"] = li.css(f"{pre}email a::text").get()
+            item["year"] = li.css(f"{pre}cohort-year::text").get()
+            item["departments"] = (
+                li.css(f"{pre}person-majors a::text").getall()
+                + li.css(f"{pre}person-minors a::text").getall()
             )
+            item["pronouns"] = li.css(f"{pre}pronouns::text").get([])
+            item["school"] = "carleton"
+
+            if item["pronouns"]:
+                item["pronouns"] = item["pronouns"].split("/")
+
+            if item["departments"] == ["Undecided"]:
+                item["departments"] = []
+
+            yield item
 
 
 def get_carleton_cookies() -> None:

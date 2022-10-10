@@ -5,6 +5,7 @@
 
 DATABASE_PATH = "./db.sqlite"
 COOKIE_PATH = "./cookies.secret"
+DEFAULT_IMAGES_DIR = "./default_images" 
 
 ##################
 # DIRECTORY URLS #
@@ -15,7 +16,6 @@ CARLETON_IMAGE_URL = "https://apps.carleton.edu/stock/ldapimage.php?id={}"
 
 OLAF_DIRECTORY_URL = "https://www.stolaf.edu/directory/search/"
 OLAF_IMG_URL = "https://www.stolaf.edu/stofaces/face.cfm?username={}&fullsize"
-
 
 ###################
 # SCRAPY SETTINGS #
@@ -28,16 +28,18 @@ BOT_NAME = "Carleton/Olaf Directory Scraper"
 SPIDER_MODULES = ["src.scraper"]
 NEWSPIDER_MODULE = "src.scraper"
 
-LOG_LEVEL = "INFO"
+LOG_LEVEL = "DEBUG"
 # LOG_FILE="./scrapy.log"
 
 # USER_AGENT = "scraper (+http://www.yourdomain.com)"
-ROBOTSTXT_OBEY = True
-CONCURRENT_REQUESTS_PER_DOMAIN = 1
-DOWNLOAD_DELAY = 1
+# ROBOTSTXT_OBEY = True
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_TARGET_CONCURRENCY = 16
+CONCURRENT_ITEMS = 10000
 
 LOG_LEVEL = "INFO"
 LOG_FORMAT = "%(levelname)s: %(message)s"
+LOG_FORMATTER = 'src.scraper.middleware.OleOrCarlLogFormatter'
 
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
