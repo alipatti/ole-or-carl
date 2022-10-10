@@ -13,13 +13,12 @@ numpy = "*"
 pillow = "*"
 selenium = "*"
 face-recognition = "*"
-
+pyyaml = "*"
 
 [dev-packages]
 pylint = "*"
 black = "*"
 ipykernel = "*"
-
 
 [requires]
 python_version = "3.10"

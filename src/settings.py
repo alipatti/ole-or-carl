@@ -4,8 +4,10 @@
 #############
 
 DATABASE_PATH = "./db.sqlite"
-COOKIE_PATH = "./cookies.secret"
-DEFAULT_IMAGES_DIR = "./default_images" 
+CARLETON_COOKIE_PATH = "./src/scraper/cookies.secret"
+DEFAULT_IMAGES_DIR = "./src/scraper/default_images"
+CLASSIFIER_PARAMS_PATH = "./src/classifier/best_params.yml"
+GRID_SEARCH_RESULTS_PATH = "./src/classifier/grid_search_results.csv"
 
 ##################
 # DIRECTORY URLS #
@@ -39,7 +41,7 @@ CONCURRENT_ITEMS = 10000
 
 LOG_LEVEL = "INFO"
 LOG_FORMAT = "%(levelname)s: %(message)s"
-LOG_FORMATTER = 'src.scraper.middleware.OleOrCarlLogFormatter'
+LOG_FORMATTER = "src.scraper.middleware.OleOrCarlLogFormatter"
 
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {

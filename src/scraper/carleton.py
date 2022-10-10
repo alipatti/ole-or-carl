@@ -11,7 +11,7 @@ from scrapy.selector import SelectorList
 
 from .items import ModelItem
 from ..database import Student
-from ..settings import COOKIE_PATH, CARLETON_DIRECTORY_URL
+from ..settings import CARLETON_COOKIE_PATH, CARLETON_DIRECTORY_URL
 
 
 class CarletonDirectorySpider(scrapy.Spider):
@@ -23,7 +23,7 @@ class CarletonDirectorySpider(scrapy.Spider):
 
     def __init__(self, name=None, **kwargs):
 
-        if not os.path.exists(COOKIE_PATH):
+        if not os.path.exists(CARLETON_COOKIE_PATH):
             raise ValueError(
                 "Carleton auth cookies are required. "
                 "Run `get_carleton_cookies()` to get them."
@@ -34,7 +34,7 @@ class CarletonDirectorySpider(scrapy.Spider):
     def start_requests(self):
 
         # load cookies
-        with open(COOKIE_PATH, "rb") as f:
+        with open(CARLETON_COOKIE_PATH, "rb") as f:
             auth_cookies = pickle.load(f)
 
         # deploy requests
@@ -103,9 +103,9 @@ def get_carleton_cookies() -> None:
     # check if cookies exist and are recent
     threshold = 60 * 60 * 6  # 6 hours
 
-    if not os.path.exists(COOKIE_PATH):
+    if not os.path.exists(CARLETON_COOKIE_PATH):
         print("Carleton auth cookies do not exist.")
-    elif (age := os.path.getmtime(COOKIE_PATH)) - time.time() > threshold:
+    elif (age := os.path.getmtime(CARLETON_COOKIE_PATH)) - time.time() > threshold:
         print(f"Carleton auth cookies are expired ({age / 60 / 60:.1f} hours).")
     else:
         print("Carleton auth cookies exist. Proceeding...")
@@ -143,5 +143,5 @@ def get_carleton_cookies() -> None:
     cookies = driver.get_cookies()
     driver.close()
 
-    with open(COOKIE_PATH, "wb") as f:
+    with open(CARLETON_COOKIE_PATH, "wb") as f:
         pickle.dump(cookies, f)

@@ -11,6 +11,8 @@ from .settings import CARLETON_IMAGE_URL, DATABASE_PATH, OLAF_IMG_URL
 
 db = SqliteDatabase(DATABASE_PATH)
 
+# TODO refactor database to allow additional column storing for score
+
 
 class NDArrayField(BlobField):
     def python_value(self, value: bytes) -> np.ndarray:
