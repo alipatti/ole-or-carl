@@ -7,7 +7,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 
-from ..settings import CLASSIFIER_PARAMS_PATH, GRID_SEARCH_RESULTS_PATH
+from ..settings import (
+    CLASSIFIER_PARAMS_PATH,
+    GRID_SEARCH_RESULTS_PATH,
+    GRID_SEARCH_RANGE,
+)
 from ..database import Student
 
 
@@ -17,27 +21,10 @@ def get_best_params() -> dict:
 
     # ranges loosely taken from page 6 of
     # https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf
-    param_grid = [
-        {
-            "svc__kernel": ["linear"],
-            "svc__C": np.logspace(-3, 6, 10, base=2),
-        },
-        {
-            "svc__kernel": ["rbf"],
-            "svc__C": np.logspace(-5, 15, 5, base=2),
-            "svc__gamma": np.logspace(-15, 3, 5, base=2),
-        },
-        {
-            "svc__kernel": ["poly"],
-            "svc__C": np.logspace(-5, 15, 5, base=2),
-            "svc__degree": [2, 3, 4],
-            "svc__gamma": np.logspace(-15, 3, 5, base=2),
-        },
-    ]
 
     model = GridSearchCV(
         estimator=make_pipeline(StandardScaler(), SVC()),
-        param_grid=param_grid,
+        param_grid=GRID_SEARCH_RANGE,
         scoring="accuracy",
         n_jobs=12,  # use all available threads
         refit=True,  # so we get the refit time

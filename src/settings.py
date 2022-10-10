@@ -1,4 +1,5 @@
-# pylint: disable=wrong-import-position
+import numpy as np
+
 #############
 # FILEPATHS #
 #############
@@ -9,6 +10,30 @@ DEFAULT_IMAGES_DIR = "./src/scraper/default_images"
 CLASSIFIER_PARAMS_PATH = "./src/classifier/best_params.yml"
 GRID_SEARCH_RESULTS_PATH = "./src/classifier/grid_search_results.csv"
 
+
+#######################
+# MODEL CONFIGURATION #
+#######################
+
+GRID_SEARCH_RANGE = [
+    {
+        "svc__kernel": ["linear"],
+        "svc__C": np.logspace(-3, 6, 10, base=2),
+    },
+    {
+        "svc__kernel": ["rbf"],
+        "svc__C": np.logspace(-5, 15, 5, base=2),
+        "svc__gamma": np.logspace(-15, 3, 5, base=2),
+    },
+    {
+        "svc__kernel": ["poly"],
+        "svc__C": np.logspace(-5, 15, 5, base=2),
+        "svc__degree": [2, 3, 4],
+        "svc__gamma": np.logspace(-15, 3, 5, base=2),
+    },
+]
+
+
 ##################
 # DIRECTORY URLS #
 ##################
@@ -18,6 +43,7 @@ CARLETON_IMAGE_URL = "https://apps.carleton.edu/stock/ldapimage.php?id={}"
 
 OLAF_DIRECTORY_URL = "https://www.stolaf.edu/directory/search/"
 OLAF_IMG_URL = "https://www.stolaf.edu/stofaces/face.cfm?username={}&fullsize"
+
 
 ###################
 # SCRAPY SETTINGS #
