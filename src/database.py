@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 import requests
 
-from .settings import CARLETON_IMAGE_URL, DATABASE_PATH, OLAF_IMG_URL
+from .settings import CARLETON_IMG_URL, DATABASE_PATH, OLAF_IMG_URL
 
 
 db = SqliteDatabase(DATABASE_PATH)
@@ -49,7 +49,7 @@ class Student(Model):
     face = NDArrayField(null=True)
 
     def get_image(self) -> Image.Image:
-        url = OLAF_IMG_URL if self.email.endswith("stolaf.edu") else CARLETON_IMAGE_URL
+        url = OLAF_IMG_URL if self.email.endswith("stolaf.edu") else CARLETON_IMG_URL
 
         with requests.get(url.format(self.email)) as r:
             return Image.open(r.content)

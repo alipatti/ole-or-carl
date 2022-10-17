@@ -13,3 +13,6 @@ _legacy
 
 # log outputs
 *.log
+
+# for tailwind
+node_modules

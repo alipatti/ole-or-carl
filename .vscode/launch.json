@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Web app",
+      "type": "python",
+      "request": "launch",
+      "module": "src.app.__init__",
+      "justMyCode": true
+    },
+    {
       "name": "Carleton scraper",
       "type": "python",
       "request": "launch",

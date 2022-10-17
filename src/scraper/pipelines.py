@@ -14,7 +14,7 @@ from peewee import DatabaseError
 import numpy as np
 
 from ..database import Student
-from ..settings import OLAF_IMG_URL, CARLETON_IMAGE_URL, DEFAULT_IMAGES_DIR
+from ..settings import OLAF_IMG_URL, CARLETON_IMG_URL, DEFAULT_IMAGES_DIR
 
 if typing.TYPE_CHECKING:
     from .items import ModelItem
@@ -81,7 +81,7 @@ class FaceEmbedder:
 
     IMG_URLS = {
         "stolaf": OLAF_IMG_URL,
-        "carleton": CARLETON_IMAGE_URL,
+        "carleton": CARLETON_IMG_URL,
     }
 
     DEFAULT_IMAGES = [

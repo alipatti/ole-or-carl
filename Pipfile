@@ -7,17 +7,18 @@ name = "pypi"
 scrapy = "*"
 peewee = "*"
 flask = "*"
-tqdm = "*"
 scikit-learn = "*"
 numpy = "*"
-pillow = "*"
 selenium = "*"
 face-recognition = "*"
-pyyaml = "*"
+pandas = "*"
+scipy = "*"
+ipympl = "*"
 
 [dev-packages]
 pylint = "*"
 black = "*"
+djlint = "*"
 ipykernel = "*"
 
 [requires]

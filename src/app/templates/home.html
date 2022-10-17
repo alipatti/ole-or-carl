@@ -1,0 +1,57 @@
+{% extends "base.html" %} {% block main %}
+<div class="px-5 lg:pt-20">
+  <header class="scale-90 md:scale-100">
+    <h1
+      class="flex flex-col lg:gap-10 lg:flex-row justify-center items-center"
+      style="font-size: 12rem"
+    >
+      <span
+        class="-rotate-6 -mb-10 font-['Calluna'] text-stolaf-manitou"
+      >
+        OLE
+      </span>
+      <span class="text-5xl">or</span>
+      <span class="rotate-6"
+        ><img
+          src="{{ url_for('static', filename='images/carl.svg') }}"
+          style="height: 0.8em"
+          alt="Carl"
+      /></span>
+    </h1>
+  </header>
+
+  <main class="flex flex-col gap-10 items-center my-20 lg:my-10">
+    <h2 class="text-xl text-center tracking-wider max-w-xl">
+      <em>The</em> definitive source for determining if you're crazy for
+      thinking that one blonde girl in your 8:30 Spanish looks like she goes to
+      the other (worse) Northfield college.
+    </h2>
+
+    <form class="grid gap-6 w-full max-w-lg" method="post">
+      <div class="w-full">
+        <label class="text-xs text-gray-400" for="name">Name</label> <br />
+        <input
+          class="bg-gray-100 w-full p-1"
+          type="text"
+          name="name"
+          placeholder="Allison Byerly"
+        />
+      </div>
+
+      {% if failed %}
+      <div class="bg-red-400 text-white w-3/4 mx-auto text-center py-1 rounded-md">
+        No student found with the name '{{ name }}'.
+      </div>
+      {% endif %}
+
+      <button
+        type="submit"
+        class="text-xl bg-stolaf-prairie px-10 py-1 mx-auto rounded-md"
+      >
+        Go!
+      </button>
+    </form>
+  </main>
+</div>
+
+{% endblock main %}

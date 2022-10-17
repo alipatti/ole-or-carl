@@ -1,0 +1,67 @@
+<!-- prettier-ignore -->
+{% extends "base.html" %}
+{% set text_color = "stolaf-black" if student.score > 0 else "carleton-maize" %} 
+{% set bg_color = "stolaf-manitou" if student.score > 0 else "carleton-blue" %}
+{% set bg_image = "logo-stolaf" if student.score > 0 else "logo-carleton" %}
+{% block main %}
+
+<div class="bg-{{ bg_image }} bg-cover bg-center w-screen h-screen">
+  <div class="backdrop-blur-lg w-full h-full flex justify-center items-center">
+    <main
+      class="container flex max-w-4xl bg-{{ bg_color }} bg-opacity-80 md:rounded-lg shadow-lg"
+    >
+      {# left #}
+      <figure>
+        <img
+          src="{{ student.img_url }}"
+          alt="{{ student.name }}"
+          class="w-96 object-cover md:rounded-l-lg"
+          style="aspect-ratio: 3 / 4"
+        />
+      </figure>
+
+      {# right #}
+      <div class="flex flex-col gap-8 w-full p-10">
+        {# student info #}
+        <div class="space-y-2">
+          <h1
+            class="text-5xl small-caps font-bold tracking-wider text-{{ text_color }}"
+          >
+            {{ student.name }}
+          </h1>
+          <span class="text-xg tracking-wide text-gray-300">
+            looks like {{ 'an Ole' if student.score > 0 else 'a Carl' }}
+          </span>
+        </div>
+
+        {# slider #}
+        <div
+          class="relative w-full h-16 py-8 justify-self-center children:-translate-y-1/2 children:absolute children:rounded-full"
+          id="oleness-slider"
+        >
+          {# rail #}
+          <div class="h-1 w-full bg-gray-200"></div>
+
+          {# colored rail #}
+          <div
+            class="h-1 {{ 'left-1/2' if student.score > 0 else 'right-1/2' }} bg-{{ text_color }}"
+            style="width: {{ abs(50 - student.translate_percent) }}%;"
+          ></div>
+
+          {# moving dot #}
+          <div
+            class="h-3 aspect-square bg-{{ text_color }} -translate-x-1/2"
+            style="left: {{ student.translate_percent }}%"
+          ></div>
+        </div>
+
+        <span
+          class="text-center text-3xl font-bold tracking-wide top-14 text-{{ text_color }}"
+        >
+          {{ student.score }}
+        </span>
+      </div>
+    </main>
+  </div>
+</div>
+{% endblock main %}
