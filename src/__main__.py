@@ -4,10 +4,10 @@ from typing import Literal
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from src.database import create_tables
-from src.scraper.carleton import CarletonDirectorySpider, get_carleton_cookies
-from src.scraper.stolaf import OlafDirectorySpider
-from src.settings import DATABASE_PATH
+from .database import create_tables
+from .scraper.carleton import CarletonDirectorySpider, get_carleton_cookies
+from .scraper.stolaf import OlafDirectorySpider
+from .settings import DATABASE_PATH
 
 
 def scrape(site: Literal["carleton", "stolaf", "all"], reset_database=False):
@@ -31,4 +31,5 @@ def scrape(site: Literal["carleton", "stolaf", "all"], reset_database=False):
 
 
 if __name__ == "__main__":
-    scrape("all", reset_database=False)
+    # scrape("all", reset_database=False)
+    print("Hello World!")
