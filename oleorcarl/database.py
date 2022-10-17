@@ -11,7 +11,7 @@ from .settings import CARLETON_IMG_URL, DATABASE_PATH, OLAF_IMG_URL
 
 db = SqliteDatabase(DATABASE_PATH)
 
-# TODO refactor database to allow additional column storing for score
+# TODO add col to store id (email before the @ sign)
 
 
 class NDArrayField(BlobField):

@@ -1,3 +1,5 @@
+# TODO move app logic to separate file?
+
 from flask import Flask, render_template, request
 from scipy.special import expit as sigmoid  # pylint: disable=no-name-in-module
 from matplotlib.colors import LinearSegmentedColormap
@@ -10,10 +12,6 @@ img_urls = {
     "stolaf": OLAF_IMG_URL,
     "carleton": CARLETON_IMG_URL,
 }
-
-color_map = LinearSegmentedColormap.from_list(
-    "carleton -> stolaf", ["#003e7e", "#e1a026"]
-)
 
 app = Flask(__name__)
 
@@ -31,6 +29,8 @@ def home_page():
         return render_template("home.html", failed=True)
 
     student.img_url = img_urls[student.school].format(student.email.split("@")[0])
+
+    # TODO move scoring logic to `model` sub-package
     student.score = round(model.decision_function(student.face.reshape(1, -1))[0], 3)
 
     # scale by 1.5 to use more of the range (value chosen arbitrarily)
