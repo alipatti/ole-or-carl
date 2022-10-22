@@ -2,20 +2,29 @@ import re
 import typing
 import scrapy
 from scrapy.http import FormRequest
-from scrapy.selector import Selector
 
-from ..scraper.items import ModelItem
+from .pipelines import GrownupFilter, UniqueFilter, FaceEmbedder, DBSaver
+from .items import ModelItem
 from ..database import Student
 from ..settings import OLAF_DIRECTORY_URL
 
 
 if typing.TYPE_CHECKING:
     from scrapy.http import HtmlResponse
+    from scrapy.selector import Selector
 
 
 class OlafDirectorySpider(scrapy.Spider):
     name = "stolaf"
     allowed_domains = ["stolaf.edu"]
+    custom_settings = {
+        "ITEM_PIPELINES": {
+            GrownupFilter: 100,
+            UniqueFilter: 101,
+            FaceEmbedder: 300,
+            DBSaver: 1000,
+        }
+    }
 
     def start_requests(self):
         yield FormRequest(
@@ -31,7 +40,7 @@ class OlafDirectorySpider(scrapy.Spider):
         pre = ".c-faculty__"  # wordpress css prefix
 
         for div in response.css(".student"):
-            div: Selector  # for intellisense
+            div: "Selector"  # for intellisense
 
             item = ModelItem(Student())
 

@@ -10,6 +10,7 @@ from scrapy.http import HtmlResponse, FormRequest
 from scrapy.selector import SelectorList
 
 from .items import ModelItem
+from .pipelines import GrownupFilter, UniqueFilter, FaceEmbedder, DBSaver
 from ..database import Student
 from ..settings import CARLETON_COOKIE_PATH, CARLETON_DIRECTORY_URL
 
@@ -17,6 +18,14 @@ from ..settings import CARLETON_COOKIE_PATH, CARLETON_DIRECTORY_URL
 class CarletonDirectorySpider(scrapy.Spider):
     name = "Carleton Directory Scraper"
     allowed_domains = ["carleton.edu"]
+    custom_settings = {
+        "ITEM_PIPELINES": {
+            GrownupFilter: 100,
+            UniqueFilter: 101,
+            FaceEmbedder: 300,
+            DBSaver: 1000,
+        }
+    }
 
     overflow_warning = "Over 100 matches found"
     login_warning = "to see enhanced results"
@@ -90,7 +99,7 @@ class CarletonDirectorySpider(scrapy.Spider):
             yield item
 
 
-def get_carleton_cookies() -> None:
+def get_carleton_cookies(headless=True) -> None:
     """Prompts the user for Carleton credentials, logs in, and
     stores the cookies for use by the scraper in the file
     given by `settings.COOKIE_PATH`"""
@@ -113,13 +122,13 @@ def get_carleton_cookies() -> None:
 
     print("Preparing to generate cookies...")
     print("Please enter Carleton login information:")
-    username = input(" - username: ")
-    password = input(" - password: ")
+    username = input("  username: ")
+    password = input("  password: ")
 
     print("Retrieving cookies...")
 
     options = webdriver.ChromeOptions()
-    # options.headless = True
+    options.headless = headless
     driver = webdriver.Chrome(options=options)
 
     url = "https://www.carleton.edu/directory/wp-login.php?redirect_to=%2Fdirectory%2F"
@@ -142,6 +151,8 @@ def get_carleton_cookies() -> None:
 
     cookies = driver.get_cookies()
     driver.close()
+
+    print("Done!")
 
     with open(CARLETON_COOKIE_PATH, "wb") as f:
         pickle.dump(cookies, f)

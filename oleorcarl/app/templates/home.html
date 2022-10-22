@@ -1,12 +1,15 @@
-{% extends "base.html" %} {% block main %}
+<!-- prettier-ignore -->
+{% extends "base.html" %}
+{% block main %}
+
 <div class="px-5 lg:pt-20">
-  <header class="scale-90 md:scale-100">
+  <header class="scale-[.8] md:scale-100">
     <h1
-      class="flex flex-col lg:gap-10 lg:flex-row justify-center items-center"
+      class="flex flex-col items-center justify-center lg:flex-row lg:gap-10"
       style="font-size: 12rem"
     >
       <span
-        class="-rotate-6 -mb-10 font-['Calluna'] text-stolaf-manitou"
+        class="-mb-10 -rotate-6 font-['Calluna'] tracking-tighter text-stolaf-primary"
       >
         OLE
       </span>
@@ -20,38 +23,105 @@
     </h1>
   </header>
 
-  <main class="flex flex-col gap-10 items-center my-20 lg:my-10">
-    <h2 class="text-xl text-center tracking-wider max-w-xl">
+  <main class="mt-10 flex flex-col items-center gap-10">
+    <h2
+      class="max-w-xl text-center text-xl tracking-wider"
+      id="blurb"
+    >
       <em>The</em> definitive source for determining if you're crazy for
       thinking that one blonde girl in your 8:30 Spanish looks like she goes to
       the other (worse) Northfield college.
     </h2>
 
-    <form class="grid gap-6 w-full max-w-lg" method="post">
-      <div class="w-full">
+    <form class="grid w-full max-w-lg gap-6" method="post" id="form">
+      <div class="relative w-full">
         <label class="text-xs text-gray-400" for="name">Name</label> <br />
         <input
-          class="bg-gray-100 w-full p-1"
+          class="w-full rounded-lg border-2 border-green bg-gray-100 p-1"
+          id="search-bar"
           type="text"
           name="name"
-          placeholder="Allison Byerly"
+          placeholder="Start typing to see results"
         />
+        <ul
+          class="absolute top-16 hidden max-h-52 w-full space-y-2 divide-y-2 overflow-y-scroll rounded-md bg-gray-50 p-3 shadow-md children:cursor-pointer children:-space-y-1 descendant-small:text-gray-500"
+          id="search-suggestions"
+        ></ul>
       </div>
 
-      {% if failed %}
-      <div class="bg-red-400 text-white w-3/4 mx-auto text-center py-1 rounded-md">
-        No student found with the name '{{ name }}'.
+      {% if failed_name %}
+      <div
+        class="mx-auto w-3/4 rounded-md bg-red-400 py-1 text-center text-white"
+      >
+        No student found with the name '{{ failed_name }}'.
       </div>
       {% endif %}
 
       <button
         type="submit"
-        class="text-xl bg-stolaf-prairie px-10 py-1 mx-auto rounded-md"
+        class="mx-auto rounded-md bg-green px-10 py-1 text-xl tracking-widest text-white shadow-md"
       >
         Go!
       </button>
     </form>
   </main>
 </div>
+
+{# search suggestions script #}
+<script>
+  const form = document.getElementById("form")
+  const blurb = document.getElementById("blurb")
+  const searchbar = document.getElementById("search-bar")
+  const suggestions = document.getElementById("search-suggestions")
+
+  // is this a security leak?? no...
+  const students = {{ students | tojson }}
+
+  searchbar.oninput = (event) => {
+
+    suggestions.classList.remove("hidden")
+
+    const prefix = event.target.value.toLowerCase()
+
+    const matching_students = students.filter((student) =>
+      student.name.toLowerCase().startsWith(prefix)
+      || student.email.startsWith(prefix)
+    ).slice(0, 20)
+
+    suggestions.replaceChildren(...matching_students.map((student) => {
+      // I really hate vanilla js...
+      li = document.createElement("li")
+
+      name_p = document.createElement("p")
+      name_p.innerText = student.name
+
+      email_p = document.createElement("p")
+      email_small = document.createElement("small")
+      email_small.innerText = student.email
+
+      email_p.replaceChildren(email_small)
+      li.replaceChildren(name_p, email_p)
+
+      li.onmousedown = (event) => {
+        searchbar.value = student.name
+        form.submit()
+      }
+
+      return li
+    }))
+
+    if (!matching_students.length)
+      suggestions.innerText = "No matching students."
+  }
+
+  searchbar.onfocus = (event) => {
+    if (event.target.value)
+      suggestions.classList.remove("hidden")
+  }
+
+  searchbar.onblur = (event) => {
+    suggestions.classList.add("hidden")
+  }
+</script>
 
 {% endblock main %}

@@ -8,7 +8,7 @@ import typing
 from pprint import pformat
 
 from scrapy.exceptions import DropItem
-from scrapy.http import Request, Response
+from scrapy.http import Request
 from face_recognition import face_encodings, face_locations, load_image_file
 from peewee import DatabaseError
 import numpy as np
@@ -17,6 +17,7 @@ from ..database import Student
 from ..settings import OLAF_IMG_URL, CARLETON_IMG_URL, DEFAULT_IMAGES_DIR
 
 if typing.TYPE_CHECKING:
+    from scrapy.http import Response
     from .items import ModelItem
     from scrapy import Spider
 
@@ -25,13 +26,12 @@ class ItemPrinter:
     """Pretty-prints the item. For debugging."""
 
     def process_item(self, item: "ModelItem", spider: "Spider"):
-        spider.log(item, logging.DEBUG)
+        spider.log(pformat(item), logging.DEBUG)
         return item
 
 
 class GrownupFilter:
-    """Drops faculty from the pipeline.
-    (Sometimes Olaf employees sneak in.)"""
+    """Drops faculty from the pipeline. (Sometimes Olaf employees sneak in.)"""
 
     STAFF_DEPARTMENTS = {
         "Center for Advising and Academic Support",
@@ -94,8 +94,8 @@ class FaceEmbedder:
         # fetch image
         username = item["email"].split("@")[0]
         img_url = self.IMG_URLS[item["school"]].format(username)
-        req = Request(img_url)
-        res: Response = await spider.crawler.engine.download(req)
+        req = Request(img_url, priority=10)  # do these before getting other pages
+        res: "Response" = await spider.crawler.engine.download(req)
         img = load_image_file(BytesIO(res.body))
 
         if any(np.array_equal(img, default) for default in self.DEFAULT_IMAGES):

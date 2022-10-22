@@ -15,4 +15,5 @@
 # - build css w/ tailwind
 # - run flask production server
 
-print("Hello World!")
+print("-- CLI NOT IMPLEMENTED --")
+raise NotImplementedError

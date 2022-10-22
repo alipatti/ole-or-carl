@@ -15,18 +15,28 @@ img_urls = {
 
 app = Flask(__name__)
 
+students = [
+    dict(name=student.name, email=student.email)
+    for student in Student.select()
+    if student.face is not None
+]
+
 
 @app.route("/", methods=["GET", "POST"])
 def home_page():
 
     # TODO implement search autocomplete
     if request.method == "GET":
-        return render_template("home.html")
+        return render_template("home.html", students=students)
 
     student: Student = Student.get_or_none(Student.name == request.form["name"])
 
     if not student:
-        return render_template("home.html", failed=True)
+        return render_template(
+            "home.html",
+            students=students,
+            failed_name=request.form["name"],
+        )
 
     student.img_url = img_urls[student.school].format(student.email.split("@")[0])
 
