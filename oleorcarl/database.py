@@ -39,19 +39,24 @@ class ListField(CharField):
 
 
 class Student(Model):
-    name = CharField(index=True)
-    email = CharField(unique=True)
-    year = IntegerField()
+    name = CharField(index=True, null=True)
+    email = CharField(unique=True, null=True)
+    year = IntegerField(null=True)
     school = CharField()
-    pronouns = CharField(null=True)
-    departments = ListField()
+    pronouns = CharField(default=[])
+    departments = ListField(default=[])
+    source = CharField()
 
     face = NDArrayField(null=True)
 
-    def get_image(self) -> Image.Image:
+    def get_image_url(self) -> str:
         url = OLAF_IMG_URL if self.email.endswith("stolaf.edu") else CARLETON_IMG_URL
+        username = self.email.split("@")[0]  # pylint: disable=no-member
+        return url.format(username)
 
-        with requests.get(url.format(self.email)) as r:
+    def get_image(self) -> Image.Image:
+        img_url = self.get_image_url()
+        with requests.get(img_url) as r:
             return Image.open(r.content)
 
     class Meta:

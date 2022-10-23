@@ -3,26 +3,25 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Web app",
+      "name": "Scraper",
       "type": "python",
       "request": "launch",
-      "module": "src.app.__init__",
+      "module": "oleorcarl.scraper.__init__",
+      "justMyCode": true
+    },
+
+    {
+      "name": "Web-app",
+      "type": "python",
+      "request": "launch",
+      "module": "oleorcarl.app.__init__",
       "justMyCode": true
     },
     {
-      "name": "Carleton scraper",
+      "name": "Scraper",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/main.py",
-      "console": "integratedTerminal",
-      "justMyCode": true
-    },
-    {
-      "name": "St. Olaf scraper",
-      "type": "python",
-      "request": "launch",
-      "program": "${workspaceFolder}/main.py",
-      "console": "integratedTerminal",
+      "module": "oleorcarl.scraper.__init__",
       "justMyCode": true
     }
   ]

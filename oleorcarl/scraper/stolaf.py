@@ -1,3 +1,4 @@
+import logging
 import re
 import typing
 import scrapy
@@ -15,8 +16,9 @@ if typing.TYPE_CHECKING:
 
 
 class OlafDirectorySpider(scrapy.Spider):
-    name = "stolaf"
+    name = "St. Olaf Directory Scraper"
     allowed_domains = ["stolaf.edu"]
+
     custom_settings = {
         "ITEM_PIPELINES": {
             GrownupFilter: 100,
@@ -39,19 +41,29 @@ class OlafDirectorySpider(scrapy.Spider):
 
         pre = ".c-faculty__"  # wordpress css prefix
 
-        for div in response.css(".student"):
+        students = list(response.css(".student"))
+        self.log(f"Found {len(students)} Olaf students. Scraping...", logging.INFO)
+
+        for div in students:
             div: "Selector"  # for intellisense
 
             item = ModelItem(Student())
 
             item["name"] = div.css(f"{pre}name::text").get()
             item["email"] = div.css(f"{pre}email::text").get()
-            item["year"] = int(f"20{div.css(f'{pre}title::text').get()[-2:]}")
+            item["year"] = (
+                int(yr[0]) 
+                if (yr := div.css(f"{pre}title::text").re("\d{2}")) 
+                else None
+            )  # fmt: skip
             item["departments"] = div.css(f"{pre}department::text").getall()
             item["pronouns"] = div.css(f"{pre}pronouns::text").get([])
             item["school"] = "stolaf"
+            item["source"] = self.name
 
             if item["pronouns"]:
                 item["pronouns"] = re.split(r",|/ ?", item["pronouns"].strip("()"))
 
             yield item
+
+            self.log(f"{item['email']} sent to pipeline", logging.DEBUG)

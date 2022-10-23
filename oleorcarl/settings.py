@@ -32,24 +32,15 @@ BOT_NAME = "Carleton/Olaf Directory Scraper"
 SPIDER_MODULES = ["oleorcarl.scraper"]
 NEWSPIDER_MODULE = "oleorcarl.scraper"
 
-LOG_LEVEL = "DEBUG"
-# LOG_FILE="./scrapy.log"
 
 # USER_AGENT = "scraper (+http://www.yourdomain.com)"
 # ROBOTSTXT_OBEY = True
-AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_TARGET_CONCURRENCY = 1
-CONCURRENT_ITEMS = 10000
+# AUTOTHROTTLE_ENABLED = True
+# AUTOTHROTTLE_TARGET_CONCURRENCY = 1
+# CONCURRENT_ITEMS = 10000
 
 LOG_LEVEL = "INFO"
+# LOG_FILE="./scrapy.log"
 LOG_FORMAT = "%(levelname)s: %(message)s"
 LOG_FORMATTER = "oleorcarl.scraper.middleware.OleOrCarlLogFormatter"
 
-# See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    "oleorcarl.scraper.pipelines.ItemPrinter": 1,
-    "oleorcarl.scraper.pipelines.GrownupFilter": 100,
-    "oleorcarl.scraper.pipelines.UniqueFilter": 101,
-    "oleorcarl.scraper.pipelines.FaceEmbedder": 300,
-    "oleorcarl.scraper.pipelines.DBSaver": 1000,
-}

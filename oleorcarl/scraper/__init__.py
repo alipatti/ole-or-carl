@@ -12,16 +12,18 @@ from ..settings import DATABASE_PATH
 
 
 def scrape(
-    targets: list[ Literal[
+    targets: list[Literal[
         "carleton_directory",
         "stolaf_directory",
         "carleton_linkedin",
         "stolaf_linkedin",
-    ] ] | Literal["all"],  # fmt: skip
+    ]]
+    | Literal["all"],  # fmt: skip
     reset_database=False,
 ):
 
-    process = CrawlerProcess(get_project_settings())
+    settings = get_project_settings()
+    process = CrawlerProcess(settings)
 
     if reset_database:
         if os.path.exists(DATABASE_PATH):
@@ -32,14 +34,23 @@ def scrape(
     if (targets == "all") or ("carleton_directory" in targets):
         get_carleton_cookies()
 
-    spider_from_string = {
+    spiders = {
         "carleton_directory": CarletonDirectorySpider,
         "stolaf_directory": OlafDirectorySpider,
         "carleton_linkedin": CarletonLinkedInSpider,
         "stolaf_linkedin": OlafLinkedInSpider,
     }
 
-    for target in targets:
-        process.crawl(spider_from_string[target])
+    if targets == "all":
+        for spider in spiders.values():
+            process.crawl(spiders)
+
+    else:
+        for target in targets:
+            process.crawl(spiders[target])
 
     process.start()
+
+
+if __name__ == "__main__":
+    scrape(targets=["stolaf_directory"])

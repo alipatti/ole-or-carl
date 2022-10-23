@@ -68,6 +68,7 @@ class UniqueFilter:
 
         # check to see if student is in database
         if Student.get_or_none(Student.email == item["email"]):
+            
             raise DropItem("Student already exists in database.")
 
         # it's not, so continue
