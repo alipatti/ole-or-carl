@@ -97,6 +97,7 @@ class FaceEmbedder:
         img_url = self.IMG_URLS[item["school"]].format(username)
         req = Request(img_url, priority=10)  # do these before getting other pages
         res: "Response" = await spider.crawler.engine.download(req)
+        
         img = load_image_file(BytesIO(res.body))
 
         if any(np.array_equal(img, default) for default in self.DEFAULT_IMAGES):

@@ -1,3 +1,4 @@
+import json
 import logging
 import pickle
 from string import ascii_lowercase
@@ -8,11 +9,17 @@ from typing import TYPE_CHECKING
 import scrapy
 
 from scrapy.http import FormRequest
+from scrapy.exceptions import CloseSpider
 
 from .items import ModelItem
-from .pipelines import UniqueFilter, FaceEmbedder, DBSaver
+from .pipelines import GrownupFilter, UniqueFilter, FaceEmbedder, DBSaver
 from ..database import Student
-from ..settings import CARLETON_COOKIE_PATH, CARLETON_DIRECTORY_URL
+from ..settings import (
+    CARLETON_COOKIE_PATH,
+    CARLETON_CREDENTIALS_PATH,
+    CARLETON_DIRECTORY_URL,
+    CARLETON_LOGIN_URL,
+)
 
 if TYPE_CHECKING:
     from scrapy.selector import SelectorList
@@ -25,6 +32,7 @@ class CarletonDirectorySpider(scrapy.Spider):
 
     custom_settings = {
         "ITEM_PIPELINES": {
+            GrownupFilter: 100,
             UniqueFilter: 101,
             FaceEmbedder: 300,
             DBSaver: 1000,
@@ -32,7 +40,7 @@ class CarletonDirectorySpider(scrapy.Spider):
     }
 
     overflow_warning = "Over 100 matches found"
-    login_warning = "to see enhanced results"
+    login_warning = "Sign in for more search options"
 
     def __init__(self, name=None, **kwargs):
 
@@ -46,9 +54,7 @@ class CarletonDirectorySpider(scrapy.Spider):
 
     def start_requests(self):
 
-        # load cookies
-        with open(CARLETON_COOKIE_PATH, "rb") as f:
-            auth_cookies = pickle.load(f)
+        cookies = get_cookies()
 
         # deploy requests searching for
         # aa...@carleton.edu, ab...@carleton.edu, ac...@carleton.edu, ..
@@ -59,7 +65,7 @@ class CarletonDirectorySpider(scrapy.Spider):
             for b in ascii_lowercase:
                 yield FormRequest(
                     CARLETON_DIRECTORY_URL,
-                    cookies=auth_cookies,
+                    cookies=cookies,
                     method="GET",
                     formdata={"email": f"{a}{b}", "scopeAffiliation": "student"},
                     callback=self.parse,
@@ -68,16 +74,16 @@ class CarletonDirectorySpider(scrapy.Spider):
             self.log(f"Finished scraping '{a}' emails.", logging.INFO)
 
     def parse(self, response: "HtmlResponse"):  # pylint: disable=arguments-differ
-        if self.overflow_warning in str(response):
+        if self.overflow_warning in response.text:
             self.log(
                 f"Over 100 matches found when attempting to scrape"
                 f"{response.url}. Only scraping the first 100.",
                 logging.ERROR,
             )
 
-        if self.login_warning in str(response):
+        if self.login_warning in response.text:
             self.log("Unable to log in to the Carleton Directory.", logging.ERROR)
-            self.close(self, "Unable to log in to the Carleton Directory.")
+            raise CloseSpider("Unable to log in to the Carleton Directory.")
 
         pre = ".campus-directory__"  # wordpress CSS class prefix
 
@@ -106,61 +112,62 @@ class CarletonDirectorySpider(scrapy.Spider):
             yield item
 
 
-def get_carleton_cookies(headless=True) -> None:
+def create_cookies(headless=True) -> None:
+    # pylint: disable=import-outside-toplevel
+    from playwright.sync_api import sync_playwright
+
+    logging.info("Creating new Carleton auth cookies...")
+
+    with open(CARLETON_CREDENTIALS_PATH, "rt", encoding="utf-8") as f:
+        username, password = f.read().split()
+
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=headless)
+        context = browser.new_context()
+        page = context.new_page()
+
+        page.goto(CARLETON_LOGIN_URL)  # login through directory redirect url
+        page.click("a[href^='/console/ds/s/']")  # click to login w credentials
+
+        # fill credentials
+        page.fill("#username", username)
+        page.fill("#password", password)
+        page.click("form button[type='submit']")
+
+        # duo auth
+        frame = page.frame_locator("#duo_iframe")
+        frame.locator(".stay-logged-in input[type='checkbox']").click()
+        frame.locator(".push-label button").click()  # send push
+        logging.info("Duo push notification sent. Waiting for approval...")
+
+        page.wait_for_url("*carleton.edu/directory/")  # wait for approval
+        logging.info("Approval received!")
+
+        cookies = context.cookies()
+
+    with open(CARLETON_COOKIE_PATH, "wt", encoding="utf8") as f:
+        json.dump(cookies, f)
+
+
+def get_cookies() -> dict[str, str]:
     """Prompts the user for Carleton credentials, logs in, and
     stores the cookies for use by the scraper in the file
     given by `settings.COOKIE_PATH`"""
 
-    # check if cookies exist and are recent
-    threshold = 60 * 60 * 24 * 6  # 6 days
-
     if not os.path.exists(CARLETON_COOKIE_PATH):
-        print("Carleton auth cookies do not exist.")
-    elif (age := os.path.getmtime(CARLETON_COOKIE_PATH)) - time.time() > threshold:
-        print(f"Carleton auth cookies are expired ({age / 60 / 60 / 24:.1f} days).")
-    else:
-        print("Carleton auth cookies exist. Proceeding...")
-        return
+        logging.warning("Carleton auth cookies do not exist.")
+        create_cookies()
 
-    # pylint: disable=import-outside-toplevel
-    from selenium import webdriver
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.wait import WebDriverWait
-    from selenium.webdriver.support.expected_conditions import element_to_be_clickable
+    with open(CARLETON_COOKIE_PATH, "rt", encoding="utf8") as f:
+        cookies = json.load(f)
 
-    print("Preparing to generate cookies...")
-    print("Please enter Carleton login information:")
-    username = input("  username: ")
-    password = input("  password: ")
+    if any(
+        cookie["expires"] < time.time()
+        for cookie in cookies 
+        if cookie["expires"] > 0
+    ):  # fmt: skip
+        logging.warning("Some Carleton auth cookies are expired.")
+        create_cookies()
+        return get_cookies()
 
-    print("Retrieving cookies...")
-
-    options = webdriver.ChromeOptions()
-    options.headless = headless
-    driver = webdriver.Chrome(options=options)
-
-    url = "https://www.carleton.edu/directory/wp-login.php?redirect_to=%2Fdirectory%2F"
-
-    driver.get(url)
-    driver.find_element(By.ID, "idp_55012701_button").click()
-
-    driver.find_element(By.ID, "username").send_keys(username)
-    driver.find_element(By.ID, "password").send_keys(password)
-    driver.find_element(By.NAME, "_eventId_proceed").click()
-
-    frame = driver.find_element(By.ID, "duo_iframe")
-    driver.switch_to.frame(frame)
-
-    wait = WebDriverWait(driver, 60)
-    wait.until(
-        element_to_be_clickable((By.CSS_SELECTOR, ".positive.auth-button"))
-    ).click()
-    wait.until(lambda driver: driver.current_url in CARLETON_DIRECTORY_URL)
-
-    cookies = driver.get_cookies()
-    driver.close()
-
-    print("Done!")
-
-    with open(CARLETON_COOKIE_PATH, "wb") as f:
-        pickle.dump(cookies, f)
+    return cookies

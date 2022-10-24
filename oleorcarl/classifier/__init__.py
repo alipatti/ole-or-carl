@@ -9,16 +9,15 @@ from ..database import Student
 
 def get_vectors_and_labels() -> tuple[np.ndarray, np.ndarray]:
     """Returns numpy arrays `X` and `y` where `X` is the stack of all
-    face-embeddings and `y` is their corresponding labels."""
+    face-embeddings and `y` is the corresponding labels."""
 
-    students = list(Student.select())
+    students = list(Student.select().where(Student.face != None))
 
-    X = np.stack([s.face for s in students if s.face is not None])
+    X = np.stack([s.face for s in students])
 
     y = np.array([
-        bool(s.school == "stolaf")
+        1 if s.school == "stolaf" else -1
         for s in students
-        if s.face is not None
     ])  # fmt: skip
 
     return X, y

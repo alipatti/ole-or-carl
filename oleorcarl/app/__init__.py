@@ -8,6 +8,7 @@ from ..database import Student
 from ..settings import OLAF_IMG_URL, CARLETON_IMG_URL
 from ..classifier import model
 
+
 img_urls = {
     "stolaf": OLAF_IMG_URL,
     "carleton": CARLETON_IMG_URL,

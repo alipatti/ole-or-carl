@@ -6,7 +6,8 @@ DATABASE_PATH = "./db.sqlite"
 DEFAULT_IMAGES_DIR = "./oleorcarl/scraper/default_images"
 GRID_SEARCH_RESULTS_PATH = "./oleorcarl/classifier/grid_search_results.csv"
 
-CARLETON_COOKIE_PATH = "./oleorcarl/scraper/cookies.pickle.secret"
+CARLETON_COOKIE_PATH = "./oleorcarl/scraper/cookies.json.secret"
+CARLETON_CREDENTIALS_PATH = "./oleorcarl/scraper/carleton_credentials.txt.secret"
 LINKEDIN_HEADER_PATH = "./oleorcarl/scraper/linkedin_headers.yaml.secret"
 
 ########################
@@ -15,6 +16,8 @@ LINKEDIN_HEADER_PATH = "./oleorcarl/scraper/linkedin_headers.yaml.secret"
 
 CARLETON_DIRECTORY_URL = "https://www.carleton.edu/directory/"
 CARLETON_IMG_URL = "https://apps.carleton.edu/stock/ldapimage.php?id={}"
+
+CARLETON_LOGIN_URL = "https://www.carleton.edu/directory/wp-login.php?redirect_to=%2Fdirectory%2F"
 
 OLAF_DIRECTORY_URL = "https://www.stolaf.edu/directory/search/"
 OLAF_IMG_URL = "https://www.stolaf.edu/stofaces/face.cfm?username={}&fullsize"

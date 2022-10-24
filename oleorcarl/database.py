@@ -11,8 +11,6 @@ from .settings import CARLETON_IMG_URL, DATABASE_PATH, OLAF_IMG_URL
 
 db = SqliteDatabase(DATABASE_PATH)
 
-# TODO add col to store id (email before the @ sign)
-
 
 class NDArrayField(BlobField):
     def python_value(self, value: bytes) -> np.ndarray:

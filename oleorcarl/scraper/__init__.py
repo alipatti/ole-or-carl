@@ -5,10 +5,18 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
 from ..database import create_tables
-from .carleton import CarletonDirectorySpider, get_carleton_cookies
+from .carleton import CarletonDirectorySpider, get_cookies
 from .stolaf import OlafDirectorySpider
 from .linkedin import OlafLinkedInSpider, CarletonLinkedInSpider
 from ..settings import DATABASE_PATH
+
+
+spiders = {
+    "carleton_directory": CarletonDirectorySpider,
+    "stolaf_directory": OlafDirectorySpider,
+    "carleton_linkedin": CarletonLinkedInSpider,
+    "stolaf_linkedin": OlafLinkedInSpider,
+}
 
 
 def scrape(
@@ -17,8 +25,7 @@ def scrape(
         "stolaf_directory",
         "carleton_linkedin",
         "stolaf_linkedin",
-    ]]
-    | Literal["all"],  # fmt: skip
+    ]] | Literal["all"],  # fmt: skip
     reset_database=False,
 ):
 
@@ -32,14 +39,7 @@ def scrape(
         create_tables()
 
     if (targets == "all") or ("carleton_directory" in targets):
-        get_carleton_cookies()
-
-    spiders = {
-        "carleton_directory": CarletonDirectorySpider,
-        "stolaf_directory": OlafDirectorySpider,
-        "carleton_linkedin": CarletonLinkedInSpider,
-        "stolaf_linkedin": OlafLinkedInSpider,
-    }
+        get_cookies()
 
     if targets == "all":
         for spider in spiders.values():
@@ -53,4 +53,4 @@ def scrape(
 
 
 if __name__ == "__main__":
-    scrape(targets=["stolaf_directory"])
+    scrape(targets=["stolaf_directory", "carleton_directory"])

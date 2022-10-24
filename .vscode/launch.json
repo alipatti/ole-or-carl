@@ -3,6 +3,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Carleton Scraper",
+      "type": "python",
+      "request": "launch",
+      "module": "oleorcarl",
+      "args": ["scrape", "carleton_directory"],
+      "justMyCode": true
+    },
+    {
       "name": "Scraper",
       "type": "python",
       "request": "launch",
@@ -15,13 +23,6 @@
       "type": "python",
       "request": "launch",
       "module": "oleorcarl.app.__init__",
-      "justMyCode": true
-    },
-    {
-      "name": "Scraper",
-      "type": "python",
-      "request": "launch",
-      "module": "oleorcarl.scraper.__init__",
       "justMyCode": true
     }
   ]
