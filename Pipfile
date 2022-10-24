@@ -16,6 +16,8 @@ scipy = "*"
 ipympl = "*"
 jmespath = "*"
 linkedin-api = "~=2.0.0a"
+webdriver-manager = "*"
+playwright = "*"
 
 [dev-packages]
 pylint = "*"
