@@ -2,23 +2,23 @@
 module.exports = {
   content: ["oleorcarl/templates/**/*.html"],
   safelist: [
-    // carleton
+    // carleton colors
     "text-carleton-primary",
     "text-carleton-secondary",
     "text-carleton-tertiary",
     "bg-carleton-primary",
     "bg-carleton-secondary",
     "bg-carleton-tertiary",
-    "bg-logo-carleton",
-    // stolaf
+
+    // stolaf colors
     "text-stolaf-primary",
     "text-stolaf-secondary",
     "text-stolaf-tertiary",
     "bg-stolaf-primary",
     "bg-stolaf-secondary",
     "bg-stolaf-tertiary",
-    "bg-logo-stolaf",
-    // bg-images for both local development and github pages
+
+    // bg images for both local development and github pages
     "bg-[url('/static/images/carleton_logo.svg')]",
     "bg-[url('/static/images/stolaf_logo.svg')]",
     "bg-[url('/oleorcarl/static/images/carleton_logo.svg')]",
