@@ -16,14 +16,17 @@ match arguments:
 
     case ["dev"]:
         from . import app
+
         app.run(debug=True, port=3000, host="localhost")
 
     case ["build"]:
         from .freezer import freeze
+
         freeze()
 
     case ["test"]:
         from .freezer import test
+
         test()
 
     case _:

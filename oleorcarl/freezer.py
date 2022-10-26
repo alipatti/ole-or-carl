@@ -18,5 +18,6 @@ def student_page():
 def freeze():
     freezer.freeze()
 
+
 def test():
     freezer.serve(debug=True)
