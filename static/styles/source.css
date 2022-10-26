@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ole font */
+@font-face {
+    font-family: "Calluna";
+    src: url("calluna.otf");
+}
