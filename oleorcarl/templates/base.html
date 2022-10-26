@@ -4,16 +4,33 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/build.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/build.css') }}"
+    />
     <title>Ole or Carl? - {% block title %} {% endblock title %}</title>
   </head>
-  <body>
+  <body class="h-screen">
     <main>
       {% block main %}
-      <div class="container p-8 mx-auto max-w-4xl">
+      <div class="container mx-auto max-w-4xl p-8">
         {% block content %} {% endblock content %}
       </div>
       {% endblock main %}
     </main>
+
+    <footer class="absolute left-4 bottom-2">
+      <a
+        class="flex content-center font-mono"
+        href="http://github.com/alipatti/oleorcarl"
+      >
+        <img
+          class="h-4 translate-y-[.07em]"
+          src="{{ url_for('static', filename='images/github.svg') }}"
+          alt="github"
+        />
+        <small>/alipatti/oleorcarl </small>
+      </a>
+    </footer>
   </body>
 </html>
