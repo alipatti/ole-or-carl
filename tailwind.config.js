@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["oleorcarl/app/**/*.html*"],
+  content: ["oleorcarl/templates/**/*.html"],
   safelist: [
     // carleton
     "text-carleton-primary",

@@ -28,8 +28,7 @@ python_version = "3.10"
 dev = "pipenv run python -m oleorcarl dev"
 tailwind = """npx tailwindcss
         -i oleorcarl/static/styles/source.css 
-        -o oleorcarl/static/styles/build.css 
-        --watch"""
+        -o oleorcarl/static/styles/build.css"""
 build = "pipenv run python -m oleorcarl build"
 test = "pipenv run python -m oleorcarl test"
 deploy = "git subtree push --prefix build origin gh-pages"

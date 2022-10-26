@@ -1,6 +1,11 @@
 <!-- prettier-ignore -->
 {% extends "base.html" %}
 {% set school = "stolaf" if student.score > 0 else "carleton" %} 
+
+{% block title %}
+  {{ student.name }}
+{% endblock title %}
+
 {% block main %}
 
 <div class="bg-logo-{{ school }} bg-cover bg-center w-screen h-screen">

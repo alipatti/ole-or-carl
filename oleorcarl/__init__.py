@@ -13,7 +13,7 @@ students = [
         name=student.name,
         email=student.email,
         # TODO change to use `url_for`
-        url =f"oleorcarl/{student.school}/{student.username}.html"
+        url=f"{student.school}/{student.username}.html"
     )
     for student in Student.select()
     if student.face is not None
