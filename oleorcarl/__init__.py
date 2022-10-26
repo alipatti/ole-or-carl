@@ -1,26 +1,23 @@
-from flask import Flask, render_template, url_for, abort
-from scipy.special import expit as sigmoid  # pylint: disable=no-name-in-module
+from math import exp
+
+from flask import Flask, render_template, abort
+
 from .database import Student
-from .settings import OLAF_IMG_URL, CARLETON_IMG_URL
 from . import classifier
 
 
-img_urls = {
-    "stolaf": OLAF_IMG_URL,
-    "carleton": CARLETON_IMG_URL,
-}
-
 app = Flask(__name__)
 
-with app.app_context():  # needed for `url_for`
-    students = [
-        dict(
-            name=student.name,
-            email=student.email,
-        )
-        for student in Student.select()
-        if student.face is not None
-    ]
+students = [
+    dict(
+        name=student.name,
+        email=student.email,
+        # TODO change to use `url_for`
+        url =f"oleorcarl/{student.school}/{student.username}.html"
+    )
+    for student in Student.select()
+    if student.face is not None
+]
 
 
 @app.route("/")
@@ -28,15 +25,14 @@ def home_page():
     return render_template("home.html", students=students)
 
 
-@app.route("/<string:email>")
-def student_page(email: str):
+@app.route("/<string:school>/<string:username>.html")
+def student_page(school: str, username: str):
 
+    email = f"{username}@{school}.edu"
     student: Student = Student.get_or_none(Student.email == email)
 
     if not student:
         abort(404)
-
-    student.img_url = img_urls[student.school].format(student.email.split("@")[0])
 
     student.score = classifier.score(student)
 
@@ -46,5 +42,5 @@ def student_page(email: str):
     return render_template("student.html", student=student, abs=abs)
 
 
-if __name__ == "__main__":
-    app.run(debug=True, port=3000, host="localhost")
+def sigmoid(x):
+    return 1 / (1 + exp(-x))

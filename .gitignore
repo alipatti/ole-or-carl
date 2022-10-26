@@ -2,9 +2,6 @@
 *.sqlite
 *.secret
 
-# don't clog rep during migration
-_legacy
-
 # python bytecode
 **/__pycache__
 *.pyc
@@ -15,7 +12,7 @@ _legacy
 # log outputs
 *.log
 
-# for tailwind
+# for tailwind and prettier
 node_modules
 
 # scratch work

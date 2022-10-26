@@ -30,47 +30,43 @@
       the other (worse) Northfield college.
     </h2>
 
-    <div class="grid w-full max-w-lg gap-6">
-      <div class="relative w-full">
-        <label class="text-xs text-gray-400" for="name">Name</label> <br />
-        <input
-          class="w-full rounded-lg border-2 border-green bg-gray-100 p-1"
-          id="searchbar"
-          type="text"
-          name="name"
-          placeholder="Start typing to see results"
-        />
+    <div class="relative w-full max-w-lg gap-6">
+      <label class="text-xs text-gray-400" for="name">Name</label> <br />
+      <input
+        class="w-full rounded-lg border-2 border-green bg-gray-100 p-1"
+        id="searchbar"
+        type="text"
+        name="name"
+        placeholder="Start typing to see results"
+      />
 
-        <ul
-          class="absolute top-16 hidden max-h-52 w-full space-y-2 divide-y-2 overflow-y-scroll rounded-md bg-gray-50 p-3 shadow-md"
-          id="suggestions"
-        >
-          <template id="suggestion">
-            <li>
-              <a href="{{url_for('home_page')}}" class="-space-y-1">
-                <p></p>
-                <small class="text-gray-500"></small>
-              </a>
-            </li>
-          </template>
-        </ul>
-      </div>
+      <ul
+        class="absolute top-16 hidden max-h-52 w-full space-y-2 divide-y-2 overflow-y-scroll rounded-md bg-gray-50 p-3 shadow-md"
+        id="suggestions"
+      >
+        <template>
+          <li>
+            <a class="-space-y-1">
+              <p></p>
+              <small class="text-gray-500"></small>
+            </a>
+          </li>
+        </template>
+      </ul>
     </div>
   </main>
 </div>
 
 {# search suggestions script #}
 <script>
-  const blurb = document.querySelector("#blurb")
   const searchbar = document.querySelector("#searchbar")
   const suggestions = document.querySelector("#suggestions")
-  const template = document.querySelector("#suggestion")
+  const template = document.querySelector("#suggestions template")
 
   // is this a security leak?? no...
   const students = {{ students | tojson }}
 
   searchbar.oninput = (event) => {
-
     suggestions.classList.remove("hidden")
 
     const prefix = event.target.value.toLowerCase()
@@ -81,12 +77,11 @@
     ).slice(0, 20)
 
     suggestions.replaceChildren(...matching_students.map((student) => {
-      // I really hate vanilla js...
       const li = template.content.cloneNode(deep=true)
 
-      li.querySelector("a").href = `/${student.email}`
       li.querySelector("p").innerText = student.name
       li.querySelector("small").innerText = student.email
+      li.querySelector("a").href = student.url
 
       return li
     }))
@@ -94,15 +89,6 @@
     if (!matching_students.length)
       suggestions.innerText = "No matching students."
   }
-
-  searchbar.onfocus = (event) => {
-    if (event.target.value)
-      suggestions.classList.remove("hidden")
-  }
-
-  {# searchbar.onblur = (event) => {
-    suggestions.classList.add("hidden")
-  } #}
 </script>
 
 {% endblock main %}

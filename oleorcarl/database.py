@@ -1,3 +1,4 @@
+from functools import lru_cache
 from io import BytesIO
 import json
 
@@ -6,8 +7,7 @@ import numpy as np
 from PIL import Image
 import requests
 
-from .settings import CARLETON_IMG_URL, DATABASE_PATH, OLAF_IMG_URL
-
+from .settings import DATABASE_PATH, CARLETON_IMG_URL, OLAF_IMG_URL
 
 db = SqliteDatabase(DATABASE_PATH)
 
@@ -47,14 +47,20 @@ class Student(Model):
 
     face = NDArrayField(null=True)
 
-    def get_image_url(self) -> str:
-        url = OLAF_IMG_URL if self.email.endswith("stolaf.edu") else CARLETON_IMG_URL
-        username = self.email.split("@")[0]  # pylint: disable=no-member
-        return url.format(username)
+    @property
+    def username(self):
+        return self.email.split("@")[0]  # pylint: disable=no-member
 
-    def get_image(self) -> Image.Image:
-        img_url = self.get_image_url()
-        with requests.get(img_url) as r:
+    @property
+    def img_url(self):
+        url = OLAF_IMG_URL if self.school == "stolaf" else CARLETON_IMG_URL
+        return url.format(self.username)
+
+    @property
+    @lru_cache(maxsize=1)
+    def image(self):
+        # pylint: disable=missing-timeout
+        with requests.get(self.img_url) as r:
             return Image.open(r.content)
 
     class Meta:
@@ -64,16 +70,3 @@ class Student(Model):
 def create_tables(safe=True):
     db.connect()
     db.create_tables([Student], safe=safe)
-
-
-if __name__ == "__main__":
-    a1 = np.arange(5)
-    field = NDArrayField()
-    as_bytes = field.db_value(a1)
-
-    print(as_bytes)
-    print(type(as_bytes))
-
-    a2 = field.python_value(as_bytes)
-    print(a2)
-    print(np.array_equal(a1, a2))
