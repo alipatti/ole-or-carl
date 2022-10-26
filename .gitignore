@@ -17,3 +17,7 @@ _legacy
 
 # for tailwind
 node_modules
+
+# scratch work
+/scratch
+
