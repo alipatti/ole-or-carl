@@ -874,12 +874,20 @@ video {
   --tw-bg-opacity: 0.9;
 }
 
-.bg-logo-carleton {
-  background-image: url('/static/images/carleton_logo_blue.svg');
+.bg-\[url\(\'\/static\/images\/carleton_logo\.svg\'\)\] {
+  background-image: url('/static/images/carleton_logo.svg');
 }
 
-.bg-logo-stolaf {
+.bg-\[url\(\'\/static\/images\/stolaf_logo\.svg\'\)\] {
   background-image: url('/static/images/stolaf_logo.svg');
+}
+
+.bg-\[url\(\'\/oleorcarl\/static\/images\/carleton_logo\.svg\'\)\] {
+  background-image: url('/oleorcarl/static/images/carleton_logo.svg');
+}
+
+.bg-\[url\(\'\/oleorcarl\/static\/images\/stolaf_logo\.svg\'\)\] {
+  background-image: url('/oleorcarl/static/images/stolaf_logo.svg');
 }
 
 .bg-cover {
