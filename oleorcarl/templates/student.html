@@ -60,7 +60,7 @@
         <span
           class="text-center text-3xl font-bold tracking-wider top-14 text-{{ school }}-primary"
         >
-          {{ student.score }}
+          {{ "{:+.3f}".format(student.score) }}
         </span>
       </div>
     </main>

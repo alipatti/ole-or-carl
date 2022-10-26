@@ -5,6 +5,7 @@ arguments = sys.argv[1:]
 match arguments:
     case ["scrape", *targets]:
         from .scraper import scrape, spiders
+
         if not all(target in spiders for target in targets):
             print(f"Targets must be members of {spiders}")
             sys.exit()
@@ -12,15 +13,18 @@ match arguments:
         scrape(targets=targets)
 
     case ["dev"]:
-        from .app import app
-        app.run(debug=True)
+        from . import app
+
+        app.run(debug=True, port=3000, host="localhost")
 
     case ["build"]:
-        raise NotImplementedError
+        from .freezer import freeze
+
+        freeze()
 
     case _:
-        print("Invalid arguments '{}'.")
-        print("Usage: {scrape, dev, build} [*targets]")
+        print(f"Invalid arguments: {arguments}.")
+        print("Usage: python -m oleorcarl {scrape, dev, build} [*targets]")
         sys.exit()
 
 

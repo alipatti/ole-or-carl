@@ -162,12 +162,12 @@ def get_cookies() -> dict[str, str]:
         cookies = json.load(f)
 
     if any(
-        cookie["expires"] < time.time()
-        for cookie in cookies 
-        if cookie["expires"] > 0
-    ):  # fmt: skip
+        cookie["expires"] < time.time() for cookie in cookies if cookie["expires"] > 0
+    ):
+
         logging.warning("Some Carleton auth cookies are expired.")
         create_cookies()
         return get_cookies()
+    # fmt: skip
 
     return cookies

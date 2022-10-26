@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import make_pipeline
 
-from ..database import Student
+from .database import Student
 
 
 def get_vectors_and_labels() -> tuple[np.ndarray, np.ndarray]:
@@ -14,13 +14,16 @@ def get_vectors_and_labels() -> tuple[np.ndarray, np.ndarray]:
     students = list(Student.select().where(Student.face != None))
 
     X = np.stack([s.face for s in students])
-
     y = np.array([
         1 if s.school == "stolaf" else -1
         for s in students
     ])  # fmt: skip
 
     return X, y
+
+
+def score(student: Student):
+    return model.decision_function(student.face.reshape(1, -1))[0]
 
 
 model = make_pipeline(StandardScaler(), LinearSVC(dual=False))

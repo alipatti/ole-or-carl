@@ -28,10 +28,9 @@ class ModelItem(dict):
     def __setitem__(self, key, value):
         if isinstance(value, str):
             value = value.strip()
-            
+
         self._model.__setattr__(key, value)  # update underlying Peewee model
         super().__setitem__(key, value)
-
 
     def save(self):
         if self._model.save():

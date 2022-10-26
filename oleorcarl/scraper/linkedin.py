@@ -57,8 +57,7 @@ class OlafLinkedInSpider(LinkedInSpider):
     school_number = ...
 
 
-
 # TODO add automated way to get the linkedin headers?
-# - load linkedin search page and look for outgoing requests, 
+# - load linkedin search page and look for outgoing requests,
 #   then lift the headers from that request.
 # - will probably need to use puppeteer or selenium
