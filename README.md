@@ -22,3 +22,4 @@ One should not take it seriously (although if it says you look like an Ole, I ca
 - [x] Build a goofy-ass website
 - [ ] Get more training data from alumni LinkedIn profiles and the alumni directory
 - [ ] Experiment with training a from-scratch neural net (this runs the risk of the model just learning the OneCard photo background—can we remove the background before processing?)
+- [ ] Experiment with fine tuning/transfer learning from the dlib model (probably needs more training data)
