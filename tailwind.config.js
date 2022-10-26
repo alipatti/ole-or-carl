@@ -18,6 +18,11 @@ module.exports = {
     "bg-stolaf-secondary",
     "bg-stolaf-tertiary",
     "bg-logo-stolaf",
+    // bg-images for both local development and github pages
+    "bg-[url('/static/images/carleton_logo.svg')]",
+    "bg-[url('/static/images/stolaf_logo.svg')]",
+    "bg-[url('/oleorcarl/static/images/carleton_logo.svg')]",
+    "bg-[url('/oleorcarl/static/images/stolaf_logo.svg')]",
   ],
   theme: {
     extend: {
@@ -29,7 +34,7 @@ module.exports = {
         stolaf: {
           primary: "#CC8A00", // manitou (131)
           secondary: "#54585A", // heritage gray (425)
-          tertiary: "#F2C75C",  // prairie (141)
+          tertiary: "#F2C75C", // prairie (141)
           // black: "#222223", // neutral black
         },
 
@@ -39,11 +44,7 @@ module.exports = {
           secondary: "#dddddd",
           tertiary: "#FED141", // maize (122)
         },
-        green: "#588745"
-      },
-      backgroundImage: {
-        "logo-stolaf": "url('/static/images/stolaf_logo.svg')",
-        "logo-carleton": "url('/static/images/carleton_logo_blue.svg')",
+        green: "#588745",
       },
     },
   },

@@ -1,6 +1,7 @@
 <!-- prettier-ignore -->
 {% extends "base.html" %}
 {% set school = "stolaf" if student.score > 0 else "carleton" %} 
+{% set logo_file = "images/{}_logo.svg".format(school) %} 
 
 {% block title %}
   {{ student.name }}
@@ -8,7 +9,7 @@
 
 {% block main %}
 
-<div class="bg-logo-{{ school }} bg-cover bg-center w-screen h-screen">
+<div class="bg-[url('{{ url_for('static', filename=logo_file) }}')] bg-cover bg-center w-screen h-screen">
   <div
     class="flex h-full w-full flex-col items-center justify-center backdrop-blur-lg"
   >

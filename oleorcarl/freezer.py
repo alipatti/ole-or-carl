@@ -3,6 +3,7 @@ from . import app
 from .database import Student
 
 app.config["FREEZER_DESTINATION"] = "./../build"
+app.config["FREEZER_BASE_URL"] = "https://alipatti.github.io/oleorcarl/"
 freezer = Freezer(app)
 
 
