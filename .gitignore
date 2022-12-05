@@ -3,7 +3,7 @@
 *.secret
 
 # python bytecode
-**/__pycache__
+**/__pycache__/
 *.pyc
 
 # macos jeffery
@@ -13,8 +13,10 @@
 *.log
 
 # for tailwind and prettier
-node_modules
+node_modules/
 
 # scratch work
-/scratch
+scratch/
 
+# build files
+build/
