@@ -1,6 +1,6 @@
 # Ole or Carl
 
-Click [here](http://alipatti.github.io/oleorcarl/) to have some fun.
+Click [here](http://alipatti.github.io/oleorcarl/) to see who looks like an Ole.
 
 This project was originally built as a joke to refute claims that I look like an Ole and test the validity of a long-standing stereotype that students from Northfield's two colleges look meaningfully different. If they are, then a machine learning model should be able to tell them apart? Right?
 
